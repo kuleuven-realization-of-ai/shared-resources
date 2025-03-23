@@ -1,9 +1,3 @@
-data "template_file" "user_data" {
-  template = file("${path.module}/user-data.sh")
-}
-
-# resource "aws_default_vpc" "default" {}
-
 resource "aws_instance" "ec2" {
   ami                    = var.ec2_ami_id
   instance_type          = var.ec2_instance_type
@@ -24,5 +18,5 @@ resource "aws_instance" "ec2" {
   }
 
   # Install Docker by default.
-  user_data = data.template_file.user_data.rendered
+  user_data = file("${path.module}/user-data.sh")
 }
