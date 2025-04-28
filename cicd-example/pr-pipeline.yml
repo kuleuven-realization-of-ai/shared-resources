@@ -1,0 +1,30 @@
+name: Pull Request CI Pipeline
+
+on:
+  pull_request:
+    # synchronize = commit(s) pushed to the pull request
+    # opened = pull request is created
+    types: [synchronize, opened]
+
+jobs:
+
+  build:
+    name: Continuous Integration of the endpoint
+    # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+    runs-on: ubuntu-latest
+    steps:
+    # https://github.com/actions/checkout
+    - uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: |
+        git_hash=$(git rev-parse --short HEAD)
+        docker build . -t ghcr.io/${{ github.actor }}/example-cicd/my-example-fastapi-endpoint:$git_hash
+
+    - name: Test the Docker image
+      run: |
+        git_hash=$(git rev-parse --short HEAD)
+        docker run \
+        --entrypoint=/bin/bash \
+        ghcr.io/${{ github.actor }}/example-cicd/my-example-fastapi-endpoint:$git_hash \
+        ./script/test
