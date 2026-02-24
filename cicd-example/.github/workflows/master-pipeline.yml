@@ -1,0 +1,53 @@
+name: Master CICD Pipeline
+
+on:
+  push:
+    branches: main
+
+jobs:
+
+  build:
+    name: Continuous Integration of the endpoint
+    runs-on: ubuntu-latest
+    steps:
+    - name: login to GitHub Container Registry
+      # https://github.com/docker/login-action
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: |
+        git_hash=$(git rev-parse --short HEAD)
+        docker build . -t ghcr.io/${{ github.actor }}/example-cicd/my-example-fastapi-endpoint:$git_hash
+
+    - name: Test the Docker image
+      run: |
+        git_hash=$(git rev-parse --short HEAD)
+        docker run \
+        --entrypoint=/bin/bash \
+        ghcr.io/${{ github.actor }}/example-cicd/my-example-fastapi-endpoint:$git_hash \
+        ./script/test
+
+    - name: Login and push the Docker image to Github Packages
+      run: |
+        git_hash=$(git rev-parse --short HEAD)
+        docker push ghcr.io/${{ github.actor }}/example-cicd/my-example-fastapi-endpoint:$git_hash
+
+    # - name: Login to ECR
+    #   # https://github.com/docker/login-action?tab=readme-ov-file#aws-elastic-container-registry-ecr
+    #   uses: docker/login-action@v3
+    #   with:
+    #     registry: 516454187396.dkr.ecr.eu-west-3.amazonaws.com
+    #     username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    
+    # - name: Login and push the Docker image to ECR
+    #   run: |
+    #     git_hash=$(git rev-parse --short HEAD)
+    #     docker push 516454187396.dkr.ecr.eu-west-3.amazonaws.com/cedric/my-example-fastapi-endpoint:$git_hash
