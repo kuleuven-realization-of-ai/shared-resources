@@ -1,0 +1,1 @@
+"""Minifigures Webshop application."""
