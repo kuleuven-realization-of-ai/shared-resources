@@ -47,7 +47,7 @@ module. To do so:
   terraform {
     backend "s3" {
       key            = "<INSERT HERE YOUR IAM USERNAME>/infrastructure.tfstate"
-      bucket         = "terraform-states-516454187396"
+      bucket         = "terraform-states-616454187396"
       region         = "eu-west-3"
       dynamodb_table = "terraform-states"
     }
