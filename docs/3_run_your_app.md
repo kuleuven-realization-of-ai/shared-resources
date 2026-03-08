@@ -50,10 +50,11 @@ You can also use the AWS console to check that your image is available in your E
 
 ![ecr](./img/ecr.png)
 
-## Push your dependencies to your S3 bucket.
+## Push your dependencies to your S3 bucket (optional).
 
-In this course, we will use the S3 service to store our application artifacts (your ML models). To do 
-so, you can run from your Codespace/laptop containing the ML models binaries (in a `models` folder) 
+In this course, you can use the S3 service to store our application artifacts (your ML models and data),
+but this is entirely optional.
+To do so, you can run from your Codespace/laptop containing the ML models binaries (in a `models` folder) 
 the following command:
 
 ```bash

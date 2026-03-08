@@ -74,7 +74,11 @@ that you keep secret for yoursel and one private that you communicate to 3rd par
 is made by the 3rd party verifying if the communicated public key matches the secret private key you 
 kept for yoursel. The AWS SSH key pair is exactly that operation of communication your public key to AWS.
 
-To create your AWS key pair, follow these steps:
+From here on you have 2 options:
+1. Create a key pair on your local/Codespace machine and upload the public key to AWS.
+2. Create a key pair directly on AWS and download the private key to your local/Codespace machine.
+
+To create your own key pair (option 1) follow these steps:
 
 * First, you will need to generate your SSH key pair in your local/Codespace environment. To do so, 
 run the following command in your terminal. Leave everything as default (just press <kbd>ENTER</kbd>):
@@ -101,6 +105,16 @@ ssh-keygen -m PEM
 Later, when you will create your EC2 instance using the Terraform `student-stack` module, you will 
 have to give the name of that key pair you just created. It will allow you to connect transparently
 to it via SSH [as explained in the dedicated documentation.](run_your_app.md)
+
+For option 2, creating a key pair can be done in the AWS web console manually by navigating to EC2 > Key pairs. But we can also do this using the terminal. To create a key pair, run the following command (replace `[your_key_name]` with the wanted name of your key pair): `aws ec2 create-key-pair --key-name [your_key_name] --query 'KeyMaterial' --output text > [your_key_name].pem`. This will create a key pair and save the private key in a file called `[your_key_name].pem` in your current directory. After running the command, the .pem file should now show up in your left sidebar in Codespaces.
+
+Now we need to configure SSH in Codespaces so that we can later access the EC2 instance over SSH. Bear with us for a moment, this is a bit of a technical detour. Follow and execute the steps below:
+```
+$ eval "$(ssh-agent -s)"         # start the ssh agent, if not already running
+$ ssh                            # try ssh command, should work now
+$ chmod 600 [your_key_name].pem  # make sure the key is only readable by you
+$ ssh-add [your_key_name].pem    # add the key to the ssh agent
+```
 
 ## Conclusion & next steps.
 
