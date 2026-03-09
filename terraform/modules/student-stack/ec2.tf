@@ -6,7 +6,7 @@ resource "aws_instance" "ec2" {
   # it is recreated each time with the new id after destroying
   # infrastructure
   
-  vpc_security_group_ids = ["sg-09aa47b654a9aea4e"] # sg_kulroai_student_vm
+  vpc_security_group_ids = ["sg-0c98679079203888b"] # sg_kulroai_student_vm
   iam_instance_profile   = "kulroai_ec2_profile"
 
   root_block_device {
