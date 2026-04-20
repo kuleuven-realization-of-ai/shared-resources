@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+# Move to project root
+SCRIPT_PATH=$(dirname `which $0`)
+cd $SCRIPT_PATH/../
+
+# Make sure all deps are installed
+python -m pip install -r .ci/requirements.txt --quiet
+python -m pip install -r requirements.txt --quiet
+
+# Run linting and tests
+flake8 app/
+pytest
